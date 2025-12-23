@@ -1,6 +1,6 @@
 import { ADMINUSER, ADMINPASSWORD } from '$env/static/private';
 import { sha256 } from '$lib/crypto.js';
-import { redirect, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
     const user = cookies.get('session_id');
@@ -21,6 +21,8 @@ export const actions: Actions = {
             if (adminHash === loginHash) {
                 cookies.set('session_id', adminHash, { path: '/' });
                 throw redirect(303, '/');
+            } else {
+                return fail(401, { error: true, message: 'Invalid username or password' });
             }
     }
 }
