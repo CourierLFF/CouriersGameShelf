@@ -8,7 +8,7 @@ db.pragma('journal_mode = WAL');
 db.exec(`
     CREATE TABLE IF NOT EXISTS games (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
+        name TEXT,
         release_date TEXT,
         genre TEXT,
         platforms TEXT,
