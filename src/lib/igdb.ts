@@ -49,3 +49,25 @@ export async function getGameByID(gameID: number, accessToken: string) {
         throw error;
     }
 }
+
+export async function getCoverByID(coverID: number, accessToken: string) {
+    try {
+        const response = await fetch('https://api.igdb.com/v4/covers/', {
+            method: 'POST',
+            headers: {
+                'Client-ID': IGDBID,
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: `fields *; where id = ${coverID};`,
+        })
+        if (!response.ok) {
+            throw new Error(`Failed to get cover by ID: ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+        return responseData[0].url;
+    } catch (error) {
+        console.error('Error fetching cover by ID: ', error);
+        throw error;
+    }
+}
