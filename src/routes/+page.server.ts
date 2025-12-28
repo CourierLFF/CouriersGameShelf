@@ -23,7 +23,13 @@ export const actions: Actions = {
         }
 
         const accessToken = await getIGDBAccessToken();
-        const result = addGameToDB(await getGameByID(gameID, accessToken));
+        const gameResponse = await getGameByID(gameID, accessToken);
+
+        if (gameResponse.error) {
+            return fail(400, { error: true, message: gameResponse.message });
+        }
+
+        const result = addGameToDB(gameResponse.data);
         console.log(result);
     }
 };

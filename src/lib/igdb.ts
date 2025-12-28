@@ -29,7 +29,7 @@ export async function getIGDBAccessToken() {
     }
 }
 
-export async function getGameByID(gameID: number, accessToken: string) {
+export async function getGameByID(gameID: number, accessToken: string): Promise<{ error: true; message: string } | { error: false; data: Game }> {
     try {
         const response = await fetch('https://api.igdb.com/v4/games/', {
             method: 'POST',
@@ -40,7 +40,7 @@ export async function getGameByID(gameID: number, accessToken: string) {
             body: `fields *; where id = ${gameID};`,
         })
         if (!response.ok) {
-            throw new Error(`Failed to get game by ID: ${response.statusText}`);
+            return { error: true, message: `Failed to get game by ID: ${response.statusText}` };
         }
 
         const responseData = await response.json();
@@ -54,10 +54,10 @@ export async function getGameByID(gameID: number, accessToken: string) {
             description: responseData[0].summary,
             cover_art: await getCoverByID(responseData[0].cover, accessToken)
         };
-        return returnedGame;
+        return { error: false, data: returnedGame };
     } catch (error) {
         console.error('Error fetching game by ID: ', error);
-        throw error;
+        return { error: true, message: 'An error occurred while fetching the game.'};
     }
 }
 
