@@ -27,11 +27,11 @@ export function getGamesFromDB(): Game[] {
 
 export function addGameToDB(gameData: Game) {
        const gameAdd = db.prepare(
-        `INSERT INTO games (name, release_date, genre, platforms, description, cover_art) 
-         VALUES (?, ?, ?, ?, ?, ?)`
-    );
+            `INSERT INTO games (name, release_date, genre, platforms, description, cover_art) 
+            VALUES (?, ?, ?, ?, ?, ?)`
+        );
 
-        gameAdd.run(
+        const result = gameAdd.run(
             gameData.name,
             formatDate(gameData.release_date),
             JSON.stringify(gameData.genre),
@@ -39,4 +39,6 @@ export function addGameToDB(gameData: Game) {
             gameData.description,
             gameData.cover_art
         );
+
+        return result;
 }
