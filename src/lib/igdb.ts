@@ -49,8 +49,6 @@ export async function getGameByID(gameID: number, accessToken: string): Promise<
             id: responseData[0].id,
             name: responseData[0].name,
             release_date: responseData[0].first_release_date,
-            genre: JSON.stringify(responseData[0].genres),
-            platforms: JSON.stringify(responseData[0].platforms),
             description: responseData[0].summary,
             cover_art: await getCoverByID(responseData[0].cover, accessToken)
         };

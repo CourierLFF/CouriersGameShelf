@@ -12,8 +12,6 @@ db.exec(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         release_date TEXT,
-        genre TEXT,
-        platforms TEXT,
         description TEXT,
         cover_art TEXT);
     `);
@@ -27,15 +25,13 @@ export function getGamesFromDB(): Game[] {
 
 export function addGameToDB(gameData: Game) {
        const gameAdd = db.prepare(
-            `INSERT INTO games (name, release_date, genre, platforms, description, cover_art) 
-            VALUES (?, ?, ?, ?, ?, ?)`
+            `INSERT INTO games (name, release_date, description, cover_art) 
+            VALUES (?, ?, ?, ?)`
         );
 
         const result = gameAdd.run(
             gameData.name,
             formatDate(gameData.release_date),
-            JSON.stringify(gameData.genre),
-            JSON.stringify(gameData.platforms),
             gameData.description,
             gameData.cover_art
         );

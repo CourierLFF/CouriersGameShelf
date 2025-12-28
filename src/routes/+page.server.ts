@@ -30,6 +30,6 @@ export const actions: Actions = {
         }
 
         const result = addGameToDB(gameResponse.data);
-        console.log(result);
+        return result;
     }
 };

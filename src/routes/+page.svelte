@@ -31,9 +31,7 @@
     {#each games as game}
         <p>{game.name}</p>
         <p>{game.release_date}</p>
-        <p>{game.genre}</p>
         <p>{game.description}</p>
-        <p>{game.platforms}</p>
         <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
     {/each}
 {:else}
