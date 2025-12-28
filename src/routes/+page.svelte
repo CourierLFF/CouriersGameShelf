@@ -10,12 +10,14 @@
 <h1>Welcome to Courier's GameShelf</h1>
 
 {#if games.length > 0}
-    <p>Game Name: {games[0].name}</p>
-    <p>Release Date: {games[0].release_date}</p>
-    <p>Game Genre: {games[0].genre}</p>
-    <p>Game Description: {games[0].description}</p>
-    <p>Game Platforms: {games[0].platforms}</p>
-    <img src="{games[0].cover_art}" alt="Cover Art for {games[0].name}" />
+    {#each games as game}
+        <p>{game.name}</p>
+        <p>{game.release_date}</p>
+        <p>{game.genre}</p>
+        <p>{game.description}</p>
+        <p>{game.platforms}</p>
+        <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
+    {/each}
 {:else}
     <p>No games found</p>
 {/if}
