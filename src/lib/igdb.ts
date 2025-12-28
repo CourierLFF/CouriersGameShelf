@@ -1,4 +1,5 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
+import type { Game } from "./types";
 
 let cachedAccessToken: { access_token: string; expires_in: number; token_type: string } | null = null;
 let tokenExpiryTime: number = 0;
@@ -43,7 +44,17 @@ export async function getGameByID(gameID: number, accessToken: string) {
         }
 
         const responseData = await response.json();
-        return responseData;
+
+        const returnedGame: Game = {
+            id: responseData[0].id,
+            name: responseData[0].name,
+            release_date: responseData[0].first_release_date,
+            genre: JSON.stringify(responseData[0].genres),
+            platforms: JSON.stringify(responseData[0].platforms),
+            description: responseData[0].summary,
+            cover_art: await getCoverByID(responseData[0].cover, accessToken)
+        };
+        return returnedGame;
     } catch (error) {
         console.error('Error fetching game by ID: ', error);
         throw error;

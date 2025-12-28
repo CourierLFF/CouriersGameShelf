@@ -1,5 +1,7 @@
 import Database from 'better-sqlite3';
 import { dev } from '$app/environment';
+import type { Game } from './types';
+import { formatDate } from "$lib/utils";
 
 const db = new Database(dev ? 'dev.db' : 'prod.db');
 
@@ -17,3 +19,19 @@ db.exec(`
     `);
     
 export default db;
+
+export function addGameToDB(gameData: Game) {
+       const gameAdd = db.prepare(
+        `INSERT INTO games (name, release_date, genre, platforms, description, cover_art) 
+         VALUES (?, ?, ?, ?, ?, ?)`
+    );
+
+        gameAdd.run(
+            gameData.name,
+            formatDate(gameData.release_date),
+            JSON.stringify(gameData.genre),
+            JSON.stringify(gameData.platforms),
+            gameData.description,
+            gameData.cover_art
+        );
+}
