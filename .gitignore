@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*
 # Database
 dev.db
 dev.db-*
+
+# Personal
+todo.txt
