@@ -20,6 +20,11 @@ db.exec(`
     
 export default db;
 
+export function getGamesFromDB(): Game[] {
+    const dbGameData: Game[] = db.prepare('SELECT * FROM games').all() as Game[];
+    return dbGameData;
+}
+
 export function addGameToDB(gameData: Game) {
        const gameAdd = db.prepare(
         `INSERT INTO games (name, release_date, genre, platforms, description, cover_art) 

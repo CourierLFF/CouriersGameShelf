@@ -4,7 +4,7 @@
 
     export let data: PageData;
 
-    let games: Game[] = data.dbGameData;
+    let games: Game[] = data.returnedGames;
 </script>
 
 <h1>Welcome to Courier's GameShelf</h1>
