@@ -1,7 +1,7 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
 import { getIGDBAccessToken, getGameByID, getCoverByID } from "$lib/igdb";
 import { formatDate } from "$lib/utils";
-import db, { addGameToDB, getGamesFromDB, removeGameFromDB } from "$lib/db";
+import db, { addGameToDB, changeGameStateInDB, getGamesFromDB, removeGameFromDB } from "$lib/db";
 import { fail, json, type Actions } from "@sveltejs/kit";
 import type { Game } from "$lib/types";
 
@@ -45,8 +45,23 @@ export const actions: Actions = {
             return fail(400, { error: true, message: 'Invalid game ID' });
         }
 
-        removeGameFromDB(gameID);
-        
-        return { success: true };
+        const result = removeGameFromDB(gameID);
+        return result;
+    },
+    updateGameState: async ({ request }) => {
+        const data = await request.formData();
+
+        const gameID = Number(data.get('updated-game'));
+        if (Number.isNaN(gameID)) {
+            return fail(400, { error: true, message: 'Invalid game ID' });
+        }
+
+        const newGameState = String(data.get('new-game-state'));
+        if (!['Playing', 'Backlog', 'Completed', 'Dropped'].includes(newGameState)) {
+            return fail(400, { error: true, message: 'Invalid game state' });
+        }
+
+        const result = changeGameStateInDB(gameID, newGameState);
+        return result;
     }
 };

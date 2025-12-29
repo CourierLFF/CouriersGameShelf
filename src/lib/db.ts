@@ -25,20 +25,20 @@ export function getGamesFromDB(): Game[] {
 }
 
 export function addGameToDB(gameData: Game, state: string = 'backlog') {
-       const gameAdd = db.prepare(
-            `INSERT INTO games (name, release_date, description, cover_art, game_state) 
-            VALUES (?, ?, ?, ?, ?)`
-        );
+    const gameAdd = db.prepare(
+        `INSERT INTO games (name, release_date, description, cover_art, game_state) 
+        VALUES (?, ?, ?, ?, ?)`
+    );
 
-        const result = gameAdd.run(
-            gameData.name,
-            formatDate(gameData.release_date),
-            gameData.description,
-            gameData.cover_art,
-            state
-        );
+    const result = gameAdd.run(
+        gameData.name,
+        formatDate(gameData.release_date),
+        gameData.description,
+        gameData.cover_art,
+        state
+    );
 
-        return result;
+    return result;
 }
 
 export function removeGameFromDB(gameID: number) {
@@ -50,3 +50,13 @@ export function removeGameFromDB(gameID: number) {
 
     return result;
 }
+
+export function changeGameStateInDB(gameID: number, newState: string) {
+    const gameStateChange = db.prepare(
+        `UPDATE games SET game_state = ? WHERE id = ?`
+    );
+
+    const result = gameStateChange.run(newState, gameID);
+
+    return result;
+}   

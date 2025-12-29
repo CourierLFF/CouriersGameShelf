@@ -73,6 +73,18 @@
             <input type="hidden" name="remove-game" value="{game.id}">
             <input type="submit" value="Remove Game">
         </form>
+
+        <form method="POST" action="?/updateGameState">
+            <input type="hidden" name="updated-game" value="{game.id}">
+            <label for="new-game-state-{game.id}">Change Game State:</label>
+            <select id="new-game-state-{game.id}" name="new-game-state">
+                <option value="Playing" selected={game.game_state === 'Playing'}>Playing</option>
+                <option value="Backlog" selected={game.game_state === 'Backlog'}>Backlog</option>
+                <option value="Completed" selected={game.game_state === 'Completed'}>Completed</option>
+                <option value="Dropped" selected={game.game_state === 'Dropped'}>Dropped</option>
+            </select>
+            <input type="submit" value="Update State">
+        </form>
     {/each}
 {:else}
     <p>No games found</p>
