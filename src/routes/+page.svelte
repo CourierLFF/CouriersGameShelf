@@ -40,7 +40,7 @@
     <p class="error">{form.message}</p>
 {/if}
 
-<form method="POST" class="add-game-form">
+<form method="POST" class="add-game-form" action="?/addGame">
     <label for="add-game">Add Game By ID:</label>
     <input type="text" id="add-game" name="add-game" required>
 
@@ -69,6 +69,10 @@
         <p>{game.description}</p>
         <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
         <p>Game State: {game.game_state}</p>
+        <form method="POST" action="?/removeGame">
+            <input type="hidden" name="remove-game" value="{game.id}">
+            <input type="submit" value="Remove Game">
+        </form>
     {/each}
 {:else}
     <p>No games found</p>

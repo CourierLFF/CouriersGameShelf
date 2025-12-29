@@ -40,3 +40,13 @@ export function addGameToDB(gameData: Game, state: string = 'backlog') {
 
         return result;
 }
+
+export function removeGameFromDB(gameID: number) {
+    const gameRemove = db.prepare(
+        `DELETE FROM games WHERE id = ?`
+    );
+
+    const result = gameRemove.run(gameID);
+
+    return result;
+}

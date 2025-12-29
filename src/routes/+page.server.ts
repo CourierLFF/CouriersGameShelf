@@ -1,7 +1,7 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
 import { getIGDBAccessToken, getGameByID, getCoverByID } from "$lib/igdb";
 import { formatDate } from "$lib/utils";
-import db, { addGameToDB, getGamesFromDB } from "$lib/db";
+import db, { addGameToDB, getGamesFromDB, removeGameFromDB } from "$lib/db";
 import { fail, json, type Actions } from "@sveltejs/kit";
 import type { Game } from "$lib/types";
 
@@ -14,7 +14,7 @@ export async function load() {
 }
 
 export const actions: Actions = {
-    default: async ({ request }) => {
+    addGame: async ({ request }) => {
         const data = await request.formData();
 
         const gameID = Number(data.get('add-game'));
@@ -36,5 +36,17 @@ export const actions: Actions = {
 
         const result = addGameToDB(gameResponse.data, gameState);
         return result;
+    },
+    removeGame: async ({ request }) => {
+        const data = await request.formData();
+
+        const gameID = Number(data.get('remove-game'));
+        if (Number.isNaN(gameID)) {
+            return fail(400, { error: true, message: 'Invalid game ID' });
+        }
+
+        removeGameFromDB(gameID);
+        
+        return { success: true };
     }
 };
