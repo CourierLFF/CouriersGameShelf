@@ -23,10 +23,15 @@
     import type { PageData } from './$types';
     import type { Game } from '$lib/types';
 
-    export let data: PageData;
-    export let form;
+    const { data, form } = $props<{ data: PageData; form?: any }>();
 
-    let games: Game[] = data.returnedGames;
+    let games: Game[] = $derived(data.returnedGames);
+
+    let currentState: string = $state('Backlog');
+
+    let currentlyShownGames = $derived(() => {
+        return games.filter((game) => game.game_state === currentState);
+    });
 </script>
 
 <h1>Welcome to Courier's GameShelf</h1>
@@ -51,14 +56,14 @@
 </form>
 
 <div class="tracked-game-states">
-    <button>Playing</button>
-    <button>Backlog</button>
-    <button>Completed</button>
-    <button>Dropped</button>
+    <button onclick={() => currentState = 'Playing'}>Playing</button>
+    <button onclick={() => currentState = 'Backlog'}>Backlog</button>
+    <button onclick={() => currentState = 'Completed'}>Completed</button>
+    <button onclick={() => currentState = 'Dropped'}>Dropped</button>
 </div>
 
 {#if games.length > 0}
-    {#each games as game}
+    {#each currentlyShownGames() as game}
         <p>{game.name}</p>
         <p>{game.release_date}</p>
         <p>{game.description}</p>
