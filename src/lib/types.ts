@@ -4,4 +4,5 @@ export type Game = {
     release_date: number;
     description: string;
     cover_art: string; 
+    game_state: string;
 };

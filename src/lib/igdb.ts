@@ -50,7 +50,8 @@ export async function getGameByID(gameID: number, accessToken: string): Promise<
             name: responseData[0].name,
             release_date: responseData[0].first_release_date,
             description: responseData[0].summary,
-            cover_art: await getCoverByID(responseData[0].cover, accessToken)
+            cover_art: await getCoverByID(responseData[0].cover, accessToken),
+            game_state: ''
         };
         return { error: false, data: returnedGame };
     } catch (error) {

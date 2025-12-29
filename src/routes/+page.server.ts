@@ -22,6 +22,11 @@ export const actions: Actions = {
             return fail(400, { error: true, message: 'Invalid game ID' });
         }
 
+        const gameState = String(data.get('game-state'));
+        if (!['Playing', 'Backlog', 'Completed', 'Dropped'].includes(gameState)) {
+            return fail(400, { error: true, message: 'Invalid game state' });
+        }
+
         const accessToken = await getIGDBAccessToken();
         const gameResponse = await getGameByID(gameID, accessToken);
 
@@ -29,7 +34,7 @@ export const actions: Actions = {
             return fail(400, { error: true, message: gameResponse.message });
         }
 
-        const result = addGameToDB(gameResponse.data);
+        const result = addGameToDB(gameResponse.data, gameState);
         return result;
     }
 };
