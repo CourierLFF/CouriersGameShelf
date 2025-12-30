@@ -51,7 +51,8 @@ export async function getGameByID(gameID: number, accessToken: string): Promise<
             release_date: responseData[0].first_release_date,
             description: responseData[0].summary,
             cover_art: await getCoverByID(responseData[0].cover, accessToken),
-            game_state: ''
+            game_state: '',
+            user_rating: 0
         };
         return { error: false, data: returnedGame };
     } catch (error) {

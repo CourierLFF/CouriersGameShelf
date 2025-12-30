@@ -5,4 +5,5 @@ export type Game = {
     description: string;
     cover_art: string; 
     game_state: string;
+    user_rating: number;
 };

@@ -53,6 +53,14 @@
         <option value="Dropped">Dropped</option>
     </select>
 
+    <label for="user-rating">Your Rating (0-100):</label>
+    <select id="user-rating" name="user-rating">
+        <option value="0" selected>No Rating</option>
+        {#each Array(20) as _, index}
+            <option value="{(index + 1) * 5}">{(index + 1) * 5}</option>
+        {/each}
+    </select>
+
     <input type="submit" value="Add Game">
 </form>
 
@@ -70,6 +78,7 @@
         <p>{game.description}</p>
         <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
         <p>Game State: {game.game_state}</p>
+        <p>Your Rating: {game.user_rating ? game.user_rating : 'No Rating'}</p>
         <form method="POST" action="?/removeGame" use:enhance>
             <input type="hidden" name="remove-game" value="{game.id}">
             <input type="submit" value="Remove Game">
