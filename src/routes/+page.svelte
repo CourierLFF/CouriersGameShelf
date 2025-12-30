@@ -20,6 +20,7 @@
 </style>
 
 <script lang="ts">
+    import { enhance } from '$app/forms';
     import type { PageData } from './$types';
     import type { Game } from '$lib/types';
 
@@ -40,7 +41,7 @@
     <p class="error">{form.message}</p>
 {/if}
 
-<form method="POST" class="add-game-form" action="?/addGame">
+<form method="POST" class="add-game-form" action="?/addGame" use:enhance>
     <label for="add-game">Add Game By ID:</label>
     <input type="text" id="add-game" name="add-game" required>
 
@@ -69,12 +70,12 @@
         <p>{game.description}</p>
         <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
         <p>Game State: {game.game_state}</p>
-        <form method="POST" action="?/removeGame">
+        <form method="POST" action="?/removeGame" use:enhance>
             <input type="hidden" name="remove-game" value="{game.id}">
             <input type="submit" value="Remove Game">
         </form>
 
-        <form method="POST" action="?/updateGameState">
+        <form method="POST" action="?/updateGameState" use:enhance>
             <input type="hidden" name="updated-game" value="{game.id}">
             <label for="new-game-state-{game.id}">Change Game State:</label>
             <select id="new-game-state-{game.id}" name="new-game-state">
