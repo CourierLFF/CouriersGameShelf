@@ -76,7 +76,7 @@ export async function getCoverByID(coverID: number, accessToken: string) {
         }
 
         const responseData = await response.json();
-        return responseData[0].url;
+        return `https://images.igdb.com/igdb/image/upload/t_cover_big/${responseData[0].image_id}.webp`;
     } catch (error) {
         console.error('Error fetching cover by ID: ', error);
         throw error;
