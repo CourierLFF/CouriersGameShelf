@@ -81,7 +81,7 @@ export async function getCoverByID(coverID: number, accessToken: string) {
         return `https://images.igdb.com/igdb/image/upload/t_cover_big/${responseData[0].image_id}.webp`;
     } catch (error) {
         console.error('Error fetching cover by ID: ', error);
-        throw error;
+        return '';
     }
 }
 
@@ -104,7 +104,7 @@ export async function getGenreByIDs(genreIDs: number[], accessToken: string): Pr
         return genreNames.join(', ');
     } catch (error) {
         console.error('Error fetching genres by IDs: ', error);
-        throw error;
+        return '';
     }
 }
 
@@ -127,6 +127,6 @@ export async function getPlatformByIDs(platformIDs: number[], accessToken: strin
         return platformNames.join(', ');
     } catch (error) {
         console.error('Error fetching platforms by IDs: ', error);
-        throw error;
+        return '';
     }
 }
