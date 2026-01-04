@@ -54,6 +54,7 @@ export async function getGameByID(gameID: number, accessToken: string): Promise<
             genres: await getGenreByIDs(responseData[0].genres, accessToken),
             platforms: await getPlatformByIDs(responseData[0].platforms, accessToken),
             game_state: '',
+            date_completed: '',
             user_rating: 0
         };
         return { error: false, data: returnedGame };

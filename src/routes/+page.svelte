@@ -82,6 +82,9 @@
         <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
         <p>Game State: {game.game_state}</p>
         <p>Your Rating: {game.user_rating ? game.user_rating : 'No Rating'}</p>
+        {#if currentState === 'Completed'}
+            <p>Date Completed: {game.date_completed}</p>
+        {/if}
         <form method="POST" action="?/removeGame" use:enhance>
             <input type="hidden" name="remove-game" value="{game.id}">
             <input type="submit" value="Remove Game">

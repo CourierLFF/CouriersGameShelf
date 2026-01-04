@@ -7,5 +7,6 @@ export type Game = {
     platforms: string;
     cover_art: string; 
     game_state: string;
+    date_completed: string;
     user_rating: number;
 };

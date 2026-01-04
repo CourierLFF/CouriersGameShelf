@@ -18,6 +18,7 @@ db.exec(`
         platforms TEXT,
         cover_art TEXT,
         game_state TEXT DEFAULT 'backlog',
+        date_completed TEXT DEFAULT NULL,
         user_rating INTEGER);
     `);
     
@@ -36,9 +37,14 @@ export function addGameToDB(gameData: Game, state: string = 'backlog', user_rati
     }
 
     const gameAdd = db.prepare(
-        `INSERT INTO games (id, name, release_date, description, genres, platforms, cover_art, game_state, user_rating) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO games (id, name, release_date, description, genres, platforms, cover_art, game_state, date_completed, user_rating) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     );
+
+    let completionDate = '';
+    if (state === 'Completed') {
+        completionDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
+    }
 
     try {
             const result = gameAdd.run(
@@ -50,6 +56,7 @@ export function addGameToDB(gameData: Game, state: string = 'backlog', user_rati
             gameData.platforms,
             gameData.cover_art,
             state,
+            completionDate,
             user_rating
         );
 
@@ -70,11 +77,20 @@ export function removeGameFromDB(gameID: number) {
 }
 
 export function changeGameStateInDB(gameID: number, newState: string) {
-    const gameStateChange = db.prepare(
-        `UPDATE games SET game_state = ? WHERE id = ?`
-    );
+    let gameStateChange;
+    let result;
 
-    const result = gameStateChange.run(newState, gameID);
+    if (newState != 'Completed') {
+        gameStateChange = db.prepare(
+            `UPDATE games SET game_state = ? WHERE id = ?`
+        );
+        result = gameStateChange.run(newState, gameID);
+    } else {
+        gameStateChange = db.prepare(
+            `UPDATE games SET game_state = ?, date_completed = ? WHERE id = ?`
+        );
+        result = gameStateChange.run(newState, new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date()), gameID);
+    }
 
     return result;
 }   
