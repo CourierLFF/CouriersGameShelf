@@ -51,6 +51,8 @@ export async function getGameByID(gameID: number, accessToken: string): Promise<
             release_date: responseData[0].first_release_date,
             description: responseData[0].summary,
             cover_art: await getCoverByID(responseData[0].cover, accessToken),
+            genres: await getGenreByIDs(responseData[0].genres, accessToken),
+            platforms: await getPlatformByIDs(responseData[0].platforms, accessToken),
             game_state: '',
             user_rating: 0
         };
@@ -79,6 +81,52 @@ export async function getCoverByID(coverID: number, accessToken: string) {
         return `https://images.igdb.com/igdb/image/upload/t_cover_big/${responseData[0].image_id}.webp`;
     } catch (error) {
         console.error('Error fetching cover by ID: ', error);
+        throw error;
+    }
+}
+
+export async function getGenreByIDs(genreIDs: number[], accessToken: string): Promise<string> {
+    try {
+        const response = await fetch('https://api.igdb.com/v4/genres/', {
+            method: 'POST',
+            headers: {
+                'Client-ID': IGDBID,
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: `fields *; where id = (${genreIDs.join(',')});`,
+        })
+        if (!response.ok) {
+            throw new Error(`Failed to get genres by IDs: ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+        const genreNames = responseData.map((genre: { name: string }) => genre.name);
+        return genreNames.join(', ');
+    } catch (error) {
+        console.error('Error fetching genres by IDs: ', error);
+        throw error;
+    }
+}
+
+export async function getPlatformByIDs(platformIDs: number[], accessToken: string): Promise<string> {
+    try {
+        const response = await fetch('https://api.igdb.com/v4/platforms/', {
+            method: 'POST',
+            headers: {
+                'Client-ID': IGDBID,
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: `fields *; where id = (${platformIDs.join(',')});`,
+        })
+        if (!response.ok) {
+            throw new Error(`Failed to get platforms by IDs: ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+        const platformNames = responseData.map((platform: { name: string }) => platform.name);
+        return platformNames.join(', ');
+    } catch (error) {
+        console.error('Error fetching platforms by IDs: ', error);
         throw error;
     }
 }

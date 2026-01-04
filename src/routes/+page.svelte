@@ -76,6 +76,8 @@
         <p>{game.name}</p>
         <p>{game.release_date}</p>
         <p>{game.description}</p>
+        <p>Genres: {game.genres}</p>
+        <p>Platforms: {game.platforms}</p>
         <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
         <p>Game State: {game.game_state}</p>
         <p>Your Rating: {game.user_rating ? game.user_rating : 'No Rating'}</p>

@@ -13,6 +13,8 @@ db.exec(`
         name TEXT,
         release_date TEXT,
         description TEXT,
+        genres TEXT,
+        platforms TEXT,
         cover_art TEXT,
         game_state TEXT DEFAULT 'backlog',
         user_rating INTEGER);
@@ -27,14 +29,16 @@ export function getGamesFromDB(): Game[] {
 
 export function addGameToDB(gameData: Game, state: string = 'backlog', user_rating: number = 0) {
     const gameAdd = db.prepare(
-        `INSERT INTO games (name, release_date, description, cover_art, game_state, user_rating) 
-        VALUES (?, ?, ?, ?, ?, ?)`
+        `INSERT INTO games (name, release_date, description, genres, platforms, cover_art, game_state, user_rating) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     );
 
     const result = gameAdd.run(
         gameData.name,
         formatDate(gameData.release_date),
         gameData.description,
+        gameData.genres,
+        gameData.platforms,
         gameData.cover_art,
         state,
         user_rating
