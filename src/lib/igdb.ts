@@ -46,7 +46,7 @@ export async function getGameByID(gameID: number, accessToken: string): Promise<
         const responseData = await response.json();
 
         const returnedGame: Game = {
-            id: responseData[0].id,
+            id: gameID,
             name: responseData[0].name,
             release_date: responseData[0].first_release_date,
             description: responseData[0].summary,

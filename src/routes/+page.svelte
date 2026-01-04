@@ -73,6 +73,7 @@
 
 {#if games.length > 0}
     {#each currentlyShownGames() as game}
+        <p>IGDB ID: {game.id}</p>
         <p>{game.name}</p>
         <p>{game.release_date}</p>
         <p>{game.description}</p>

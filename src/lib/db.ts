@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { dev } from '$app/environment';
 import type { Game } from './types';
 import { formatDate } from "$lib/utils";
+import { error } from '@sveltejs/kit';
 
 const db = new Database(dev ? 'dev.db' : 'prod.db');
 
@@ -9,7 +10,7 @@ db.pragma('journal_mode = WAL');
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS games (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY,
         name TEXT,
         release_date TEXT,
         description TEXT,
@@ -28,23 +29,34 @@ export function getGamesFromDB(): Game[] {
 }
 
 export function addGameToDB(gameData: Game, state: string = 'backlog', user_rating: number = 0) {
+
+    const existingGame = db.prepare('SELECT id FROM games WHERE id = ?').get(gameData.id);
+    if (existingGame) {
+        return { error: true, message: 'Game already being tracked.' };
+    }
+
     const gameAdd = db.prepare(
-        `INSERT INTO games (name, release_date, description, genres, platforms, cover_art, game_state, user_rating) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO games (id, name, release_date, description, genres, platforms, cover_art, game_state, user_rating) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     );
 
-    const result = gameAdd.run(
-        gameData.name,
-        formatDate(gameData.release_date),
-        gameData.description,
-        gameData.genres,
-        gameData.platforms,
-        gameData.cover_art,
-        state,
-        user_rating
-    );
+    try {
+            const result = gameAdd.run(
+            gameData.id,
+            gameData.name,
+            formatDate(gameData.release_date),
+            gameData.description,
+            gameData.genres,
+            gameData.platforms,
+            gameData.cover_art,
+            state,
+            user_rating
+        );
 
-    return result;
+        return { error: false, success: true, data: result };
+    } catch (error) {
+        return { error: true, message: 'Failed to add game to database.' };
+    }
 }
 
 export function removeGameFromDB(gameID: number) {

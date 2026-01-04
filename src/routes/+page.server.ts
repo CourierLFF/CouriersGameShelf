@@ -31,7 +31,6 @@ export const actions: Actions = {
         if (Number.isNaN(userRating) || userRating < 0 || userRating > 100) {
             return fail(400, { error: true, message: 'Invalid user rating' });
         }
-        console.log(userRating);
 
         const accessToken = await getIGDBAccessToken();
         const gameResponse = await getGameByID(gameID, accessToken);
@@ -41,6 +40,11 @@ export const actions: Actions = {
         }
 
         const result = addGameToDB(gameResponse.data, gameState, userRating);
+
+        if (result.error) {
+            return fail(400, result);
+        }
+        
         return result;
     },
     removeGame: async ({ request }) => {
