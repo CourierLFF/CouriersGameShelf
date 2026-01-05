@@ -83,9 +83,6 @@ export const actions: Actions = {
         }
 
         const result = await searchGamesByName(query, await getIGDBAccessToken());
-        if (!result.error) {
-            console.log(result.data);
-        }
         return result;
     }  
 };
