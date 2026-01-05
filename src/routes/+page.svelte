@@ -79,6 +79,7 @@
             <p>IGDB ID: {game.id}</p>
             <p>{game.name}</p>
             <p>{game.release_date}</p>
+            <a href="/games/{game.id}">View Game</a>
             <hr />
         {/each}
     </div>
