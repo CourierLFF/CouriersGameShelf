@@ -1,5 +1,5 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
-import { getIGDBAccessToken, getGameByID, getCoverByID } from "$lib/igdb";
+import { getIGDBAccessToken, getGameByID, getCoverByID, searchGamesByName } from "$lib/igdb";
 import { formatDate } from "$lib/utils";
 import db, { addGameToDB, changeGameStateInDB, getGamesFromDB, removeGameFromDB } from "$lib/db";
 import { fail, json, type Actions } from "@sveltejs/kit";
@@ -73,5 +73,19 @@ export const actions: Actions = {
 
         const result = changeGameStateInDB(gameID, newGameState);
         return result;
-    }
+    },
+    searchGame: async ({ request }) => {
+        const data = await request.formData();
+
+        const query = String(data.get('search-query'));
+        if (!query || query.trim().length === 0) {
+            return fail(400, { error: true, message: 'Search query cannot be empty' });
+        }
+
+        const result = await searchGamesByName(query, await getIGDBAccessToken());
+        if (!result.error) {
+            console.log(result.data);
+        }
+        return result;
+    }  
 };

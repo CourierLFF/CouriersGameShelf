@@ -131,3 +131,40 @@ export async function getPlatformByIDs(platformIDs: number[], accessToken: strin
         return '';
     }
 }
+
+export async function searchGamesByName(query: string, accessToken: string): Promise<{ error: true; message: string } | { error: false; data: Game[] }> {
+    try {
+        const response = await fetch('https://api.igdb.com/v4/games/', {
+            method: 'POST',
+            headers: {
+                'Client-ID': IGDBID,
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: `search "${query}"; fields id, name, first_release_date, summary, cover, genres, platforms; limit 10;`,
+        });
+        if (!response.ok) {
+            return { error: true, message: `Failed to search games by name: ${response.statusText}` };
+        }
+
+        const responseData = await response.json();
+        const games: Game[] = await Promise.all(responseData.map(async (gameData: any) => {
+            return {
+                id: gameData.id,
+                name: gameData.name,
+                release_date: gameData.first_release_date,
+                description: '',
+                cover_art: '',
+                genres: '',
+                platforms: '',
+                game_state: '',
+                date_completed: '',
+                user_rating: 0
+            };
+        }));
+        return { error: false, data: games };
+    }
+    catch (error) {
+        console.error('Error searching games by name: ', error);
+        return { error: true, message: 'An error occurred while searching for games.'};
+    }
+}

@@ -64,6 +64,27 @@
     <input type="submit" value="Add Game">
 </form>
 
+<form method="POST" class="search-game-form" action="?/searchGame" use:enhance>
+    <label for="search-query">Search Games:</label>
+    <input type="text" id="search-query" name="search-query" required>
+    <input type="submit" value="Search">
+</form>
+
+{#if form?.error}
+    <p class="error">{form.message}</p>
+{:else if form && !form.error && form.data}
+    <div>
+        <h2>Search Results:</h2>
+        {#each form.data as game}
+            <p>IGDB ID: {game.id}</p>
+            <p>{game.name}</p>
+            <p>{game.release_date}</p>
+            <hr />
+        {/each}
+    </div>
+{/if}
+
+
 <div class="tracked-game-states">
     <button onclick={() => currentState = 'Playing'}>Playing</button>
     <button onclick={() => currentState = 'Backlog'}>Backlog</button>
