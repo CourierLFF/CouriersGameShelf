@@ -40,7 +40,28 @@
             </select>
             <input type="submit" value="Update State">
         </form>
-    {/if}
+        {:else}    
+            <form method="POST" class="add-game-form" action="?/addGame" use:enhance>
+
+                <label for="game-state">Select Game State:</label>
+                <select id="game-state" name="game-state">
+                    <option value="Playing">Playing</option>
+                    <option value="Backlog" selected>Backlog</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Dropped">Dropped</option>
+                </select>
+
+                <label for="user-rating">Your Rating (0-100):</label>
+                <select id="user-rating" name="user-rating">
+                    <option value="0" selected>No Rating</option>
+                    {#each Array(20) as _, index}
+                        <option value="{(index + 1) * 5}">{(index + 1) * 5}</option>
+                    {/each}
+                </select>
+
+                <input type="submit" value="Add Game">
+            </form>
+        {/if}
 {:else if data.error}
     <p>{data.error}</p>
 {/if}

@@ -1,8 +1,9 @@
 import { get } from 'svelte/store';
 import type { PageServerLoad } from './$types';
 import { getGameByID, getIGDBAccessToken } from '$lib/igdb';
-import { changeGameStateInDB, getGamesFromDB, removeGameFromDB } from '$lib/db';
+import { addGameToDB, changeGameStateInDB, getGamesFromDB, removeGameFromDB } from '$lib/db';
 import { fail, type Actions } from '@sveltejs/kit';
+import type { Game } from '$lib/types';
 
 export const load: PageServerLoad = async ({ params }) => {
     const accessToken = await getIGDBAccessToken();
@@ -50,5 +51,35 @@ export const actions: Actions = {
 
         const result = changeGameStateInDB(gameID, newGameState);
         return result;
-    },    
+    },
+    addGame: async ({ request, params }) => {
+        const data = await request.formData();
+
+        const gameID = params.slug ? Number(params.slug) : NaN;
+
+        const gameState = String(data.get('game-state'));
+        if (!['Playing', 'Backlog', 'Completed', 'Dropped'].includes(gameState)) {
+            return fail(400, { error: true, message: 'Invalid game state' });
+        }
+
+        let userRating = Number(data.get('user-rating'));
+        if (Number.isNaN(userRating) || userRating < 0 || userRating > 100) {
+            return fail(400, { error: true, message: 'Invalid user rating' });
+        }
+
+        const accessToken = await getIGDBAccessToken();
+        const gameResponse = await getGameByID(gameID, accessToken);
+
+        if (gameResponse.error) {
+            return fail(400, { error: true, message: gameResponse.message });
+        }
+
+        const result = addGameToDB(gameResponse.data, gameState, userRating);
+
+        if (result.error) {
+            return fail(400, result);
+        }
+        
+        return result;    
+    }
 };
