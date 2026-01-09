@@ -3,6 +3,7 @@
     import { enhance } from '$app/forms';
 
     export let data;
+    export let form;
 
     let gameTracked = false;
     if (data.allGames && data.gameData) {
@@ -40,7 +41,10 @@
             </select>
             <input type="submit" value="Update State">
         </form>
-        {:else}    
+        {:else}
+            {#if form?.success}
+                <p>{form?.message}</p>
+            {/if}
             <form method="POST" class="add-game-form" action="?/addGame" use:enhance>
 
                 <label for="game-state">Select Game State:</label>

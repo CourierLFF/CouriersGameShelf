@@ -80,6 +80,6 @@ export const actions: Actions = {
             return fail(400, result);
         }
         
-        return result;    
+        return {result: result, success: true, message: 'Game added successfully' };    
     }
 };
