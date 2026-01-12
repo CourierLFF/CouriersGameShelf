@@ -2,10 +2,15 @@
     import { enhance } from '$app/forms';
     import type { PageData } from './$types';
     import type { Game } from '$lib/types';
+    import { formatDate } from '$lib/utils';
 
     const { data, form } = $props<{ data: PageData; form?: any }>();
 
     let games: Game[] = $derived(data.returnedGames);
+
+    let currentSearchedGames = $derived(() =>
+        form && !form.error && form.data ? (form.data as Game[]) : null
+    );
 
     let currentState: string = $state('Backlog');
 
@@ -14,18 +19,40 @@
     });
 </script>
 
-<h1>Welcome to Courier's GameShelf</h1>
+<h1 class="text-3xl font-bold mb-10 text-center mt-10">Welcome to Courier's GameShelf</h1>
 
 {#if form?.error}
     <p class="text-red-500">{form.message}</p>
 {/if}
-    
-<form method="POST" class="flex flex-col gap-10 mb-20 max-w-50" action="?/addGame" use:enhance>
-    <label for="add-game">Add Game By ID:</label>
-    <input type="text" id="add-game" name="add-game" required>
+
+<form method="POST" class="search-game-form flex flex-col justify-center items-center gap-10 border-2 border-gray-700 bg-gray-900 rounded-lg p-6 mx-20 my-10" action="?/searchGame" use:enhance>
+    <div>
+        <label for="search-query" class="text-xl mr-2">Search Game:</label>
+        <input type="text" id="search-query" name="search-query" class="bg-gray-500 rounded-md p-2" required>
+    </div>
+    <!-- <input type="submit" value="Search" class="btn present-filled bg-white text-black"> -->
+     <!-- {#if form && !form.error && form.data} -->
+      {#if currentSearchedGames}
+        <div>
+            <h2 class="text-xl font-bold">Search Results:</h2>
+            {#each currentSearchedGames() as game}
+                <p>IGDB ID: {game.id}</p>
+                <a href="/games/{game.id}">{game.name}</a>
+                <p>{formatDate(game.release_date)}</p>
+                <hr />
+            {/each}
+        </div>
+    {/if}
+</form>
+
+
+
+<form method="POST" class="flex flex-col gap-10 mb-20 max-w-50 ml-10 border-2 border-gray-700 rounded-lg p-6" action="?/addGame" use:enhance>
+    <label for="add-game">Add Game By IGDB ID:</label>
+    <input type="text" id="add-game" name="add-game" class="bg-gray-500 rounded-md p-2" required>
 
     <label for="game-state">Select Game State:</label>
-    <select id="game-state" name="game-state">
+    <select id="game-state" name="game-state" class="bg-gray-500 rounded-md p-2">
         <option value="Playing">Playing</option>
         <option value="Backlog" selected>Backlog</option>
         <option value="Completed">Completed</option>
@@ -42,25 +69,6 @@
 
     <input type="submit" value="Add Game">
 </form>
-
-<form method="POST" class="search-game-form" action="?/searchGame" use:enhance>
-    <label for="search-query">Search Games:</label>
-    <input type="text" id="search-query" name="search-query" required>
-    <input type="submit" value="Search">
-</form>
-
-{#if form && !form.error && form.data}
-    <div>
-        <h2>Search Results:</h2>
-        {#each form.data as game}
-            <p>IGDB ID: {game.id}</p>
-            <p>{game.name}</p>
-            <p>{game.release_date}</p>
-            <a href="/games/{game.id}">View Game</a>
-            <hr />
-        {/each}
-    </div>
-{/if}
 
 
 <div class="my-20 flex justify-center gap-10">

@@ -140,7 +140,7 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
                 'Client-ID': IGDBID,
                 'Authorization': `Bearer ${accessToken}`,
             },
-            body: `search "${query}"; fields id, name, first_release_date, summary, cover, genres, platforms; limit 10;`,
+            body: `search "${query}"; fields id, name, first_release_date, summary, cover, genres, platforms; limit 25;`,
         });
         if (!response.ok) {
             return { error: true, message: `Failed to search games by name: ${response.statusText}` };
