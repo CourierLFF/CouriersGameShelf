@@ -1,24 +1,3 @@
-<style>
-    .error {
-        color: red;
-    }
-
-    .tracked-game-states {
-        margin: 20px 0;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .add-game-form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-        max-width: 200px;
-    }
-</style>
-
 <script lang="ts">
     import { enhance } from '$app/forms';
     import type { PageData } from './$types';
@@ -38,10 +17,10 @@
 <h1>Welcome to Courier's GameShelf</h1>
 
 {#if form?.error}
-    <p class="error">{form.message}</p>
+    <p class="text-red-500">{form.message}</p>
 {/if}
-
-<form method="POST" class="add-game-form" action="?/addGame" use:enhance>
+    
+<form method="POST" class="flex flex-col gap-10 mb-20 max-w-50" action="?/addGame" use:enhance>
     <label for="add-game">Add Game By ID:</label>
     <input type="text" id="add-game" name="add-game" required>
 
@@ -70,9 +49,7 @@
     <input type="submit" value="Search">
 </form>
 
-{#if form?.error}
-    <p class="error">{form.message}</p>
-{:else if form && !form.error && form.data}
+{#if form && !form.error && form.data}
     <div>
         <h2>Search Results:</h2>
         {#each form.data as game}
@@ -86,7 +63,7 @@
 {/if}
 
 
-<div class="tracked-game-states">
+<div class="my-20 flex justify-center gap-10">
     <button onclick={() => currentState = 'Playing'}>Playing</button>
     <button onclick={() => currentState = 'Backlog'}>Backlog</button>
     <button onclick={() => currentState = 'Completed'}>Completed</button>
