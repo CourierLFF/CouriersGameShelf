@@ -19,8 +19,6 @@
     });
 </script>
 
-<h1 class="text-3xl font-bold mb-10 text-center mt-10">Welcome to Courier's GameShelf</h1>
-
 {#if form?.error}
     <p class="text-red-500">{form.message}</p>
 {/if}

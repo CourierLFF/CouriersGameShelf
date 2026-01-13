@@ -4,7 +4,7 @@
 
 <div class="flex justify-center items-center h-screen flex-col gap-10">
     <div>
-        <h1 class="text-4xl">Welcome to Courier's Game Shelf</h1>
+        <h1 class="text-4xl">Login</h1>
 
         {#if form?.error}
             <p class="text-red-500 text-center">{form.message}</p>
