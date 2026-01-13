@@ -74,15 +74,4 @@ export const actions: Actions = {
         const result = changeGameStateInDB(gameID, newGameState);
         return result;
     },
-    searchGame: async ({ request }) => {
-        const data = await request.formData();
-
-        const query = String(data.get('search-query'));
-        if (!query || query.trim().length === 0) {
-            return fail(400, { error: true, message: 'Search query cannot be empty' });
-        }
-
-        const result = await searchGamesByName(query, await getIGDBAccessToken());
-        return result;
-    }  
 };
