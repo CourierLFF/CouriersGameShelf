@@ -86,6 +86,28 @@ export async function getCoverByID(coverID: number, accessToken: string) {
     }
 }
 
+export async function getCoversByID(coverIDs: number[], accessToken: string) {
+    try {
+        const response = await fetch('https://api.igdb.com/v4/covers/', {
+            method: 'POST',
+            headers: {
+                'Client-ID': IGDBID,
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: `fields *; where id = (${coverIDs.join(',')});`,
+        })
+        if (!response.ok) {
+            throw new Error(`Failed to get cover by ID: ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+        return responseData.map((cover: { image_id: string }) => `https://images.igdb.com/igdb/image/upload/t_cover_big/${cover.image_id}.webp`);
+    } catch (error) {
+        console.error('Error fetching cover by ID: ', error);
+        return '';
+    }
+}
+
 export async function getGenreByIDs(genreIDs: number[], accessToken: string): Promise<string> {
     try {
         const response = await fetch('https://api.igdb.com/v4/genres/', {
@@ -147,6 +169,10 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
         }
 
         const responseData = await response.json();
+
+        const gameIDs = responseData.map((gameData: any) => gameData.id);
+        const covers = await getCoversByID(responseData.map((gameData: any) => gameData.cover).filter((id: number) => id !== undefined), accessToken);
+
         const games: Game[] = await Promise.all(responseData.map(async (gameData: any) => {
             return {
                 id: gameData.id,
@@ -161,6 +187,11 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
                 user_rating: 0
             };
         }));
+
+        for (let i = 0; i < games.length; i++) {
+            games[i].cover_art = covers[i];
+        }
+
         return { error: false, data: games };
     }
     catch (error) {

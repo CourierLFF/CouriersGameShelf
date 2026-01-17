@@ -11,6 +11,7 @@ export const actions: Actions = {
         }
 
         const result = await searchGamesByName(query, await getIGDBAccessToken());
+        
         return result;
     }      
 }
