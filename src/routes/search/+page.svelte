@@ -19,14 +19,22 @@
     <!-- <input type="submit" value="Search" class="btn present-filled bg-white text-black"> -->
      <!-- {#if form && !form.error && form.data} -->
       {#if currentSearchedGames}
-        <div>
+        <div class="w-[75%]">
             <h2 class="text-xl font-bold">Search Results:</h2>
             {#each currentSearchedGames() as game}
-                <p>IGDB ID: {game.id}</p>
-                <img src="{game.cover_art}" alt="{game.name} Cover Art" class="w-32 h-auto mb-2" />
-                <a href="/games/{game.id}">{game.name}</a>
-                <p>{formatDate(game.release_date)}</p>
-                <hr />
+                <div>
+                    <div class="flex py-4 gap-6">
+                        <div>
+                            <a href="/games/{game.id}"><img src="{game.cover_art}" alt="{game.name} Cover Art" class="w-32 h-auto mb-2" /></a>
+                        </div>
+                        <div class="flex flex-col gap-4 justify-center">
+                            <a href="/games/{game.id}" class="text-2xl">{game.name}</a>
+                            <p>IGDB ID: {game.id}</p>
+                            <p>Release Date: {formatDate(game.release_date)}</p>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
             {/each}
         </div>
     {/if}
