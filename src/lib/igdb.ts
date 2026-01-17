@@ -1,5 +1,5 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
-import type { Game } from "./types";
+import type { CoverData, Game } from "./types";
 import unknownCover from '$lib/assets/images/unknown_cover.png';
 
 let cachedAccessToken: { access_token: string; expires_in: number; token_type: string } | null = null;
@@ -102,10 +102,19 @@ export async function getCoversByID(coverIDs: number[], accessToken: string) {
         }
 
         const responseData = await response.json();
-        return responseData.map((cover: { image_id: string }) => `https://images.igdb.com/igdb/image/upload/t_cover_big/${cover.image_id}.webp`);
+        let coversData = [] as CoverData[];
+        for (let i = 0; i < responseData.length; i++) {
+            coversData.push({
+                gameID: responseData[i].game,
+                coverURL: `https://images.igdb.com/igdb/image/upload/t_cover_big/${responseData[i].image_id}.webp`
+            })
+        }
+
+        return coversData;
+
     } catch (error) {
         console.error('Error fetching cover by ID: ', error);
-        return '';
+        return [];
     }
 }
 
@@ -171,8 +180,7 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
 
         const responseData = await response.json();
 
-        const gameIDs = responseData.map((gameData: any) => gameData.id);
-        const covers = await getCoversByID(responseData.map((gameData: any) => gameData.cover).filter((id: number) => id !== undefined), accessToken);
+        const coversData = await getCoversByID(responseData.map((gameData: any) => gameData.cover).filter((id: number) => id !== undefined), accessToken);
 
         const games: Game[] = await Promise.all(responseData.map(async (gameData: any) => {
             return {
@@ -190,14 +198,13 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
         }));
 
         for (let i = 0; i < games.length; i++) {
-            if (covers[i] !== undefined) {
-                games[i].cover_art = covers[i];
-            } else {
-                games[i].cover_art = unknownCover;
+            for (let j = 0; j < coversData.length; j++) {
+                if (games[i].id === coversData[j].gameID) {
+                    games[i].cover_art = coversData[j].coverURL;
+                    break;
+                }
             }
         }
-        
-        // console.log(games);
 
         return { error: false, data: games };
     }

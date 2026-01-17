@@ -10,3 +10,8 @@ export type Game = {
     date_completed: string;
     user_rating: number;
 };
+
+export type CoverData = {
+    gameID: number;
+    coverURL: string;
+}
