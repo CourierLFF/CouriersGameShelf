@@ -23,6 +23,7 @@
             <h2 class="text-xl font-bold">Search Results:</h2>
             {#each currentSearchedGames() as game}
                 <p>IGDB ID: {game.id}</p>
+                <img src="{game.cover_art}" alt="{game.name} Cover Art" class="w-32 h-auto mb-2" />
                 <a href="/games/{game.id}">{game.name}</a>
                 <p>{formatDate(game.release_date)}</p>
                 <hr />

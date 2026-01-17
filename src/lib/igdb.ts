@@ -1,5 +1,6 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
 import type { Game } from "./types";
+import unknownCover from '$lib/assets/images/unknown_cover.png';
 
 let cachedAccessToken: { access_token: string; expires_in: number; token_type: string } | null = null;
 let tokenExpiryTime: number = 0;
@@ -94,7 +95,7 @@ export async function getCoversByID(coverIDs: number[], accessToken: string) {
                 'Client-ID': IGDBID,
                 'Authorization': `Bearer ${accessToken}`,
             },
-            body: `fields *; where id = (${coverIDs.join(',')});`,
+            body: `fields *; where id = (${coverIDs.join(',')}); limit 25;`,
         })
         if (!response.ok) {
             throw new Error(`Failed to get cover by ID: ${response.statusText}`);
@@ -189,8 +190,14 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
         }));
 
         for (let i = 0; i < games.length; i++) {
-            games[i].cover_art = covers[i];
+            if (covers[i] !== undefined) {
+                games[i].cover_art = covers[i];
+            } else {
+                games[i].cover_art = unknownCover;
+            }
         }
+        
+        // console.log(games);
 
         return { error: false, data: games };
     }
