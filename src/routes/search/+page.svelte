@@ -21,7 +21,7 @@
       {#if currentSearchedGames}
         <div class="w-[75%]">
             <h2 class="text-xl font-bold">Search Results:</h2>
-          {#each currentSearchedGames() as game}
+              {#each currentSearchedGames() as game}
                 <div>
                     <div class="flex py-4 gap-6">
                         <div>
