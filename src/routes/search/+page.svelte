@@ -20,8 +20,8 @@
      <!-- {#if form && !form.error && form.data} -->
       {#if currentSearchedGames}
         <div class="w-[75%]">
-            {#each currentSearchedGames() as game}
-                <h2 class="text-xl font-bold">Search Results:</h2>
+            <h2 class="text-xl font-bold">Search Results:</h2>
+          {#each currentSearchedGames() as game}
                 <div>
                     <div class="flex py-4 gap-6">
                         <div>
