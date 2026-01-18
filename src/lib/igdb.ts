@@ -95,7 +95,7 @@ export async function getCoversByID(coverIDs: number[], accessToken: string) {
                 'Client-ID': IGDBID,
                 'Authorization': `Bearer ${accessToken}`,
             },
-            body: `fields *; where id = (${coverIDs.join(',')}); limit 25;`,
+            body: `fields *; where id = (${coverIDs.join(',')}); limit 50;`,
         })
         if (!response.ok) {
             throw new Error(`Failed to get cover by ID: ${response.statusText}`);
@@ -172,7 +172,7 @@ export async function searchGamesByName(query: string, accessToken: string): Pro
                 'Client-ID': IGDBID,
                 'Authorization': `Bearer ${accessToken}`,
             },
-            body: `search "${query}"; fields id, name, first_release_date, summary, cover, genres, platforms; limit 25;`,
+            body: `search "${query}"; fields id, name, first_release_date, summary, cover, genres, platforms; limit 50;`,
         });
         if (!response.ok) {
             return { error: true, message: `Failed to search games by name: ${response.statusText}` };
