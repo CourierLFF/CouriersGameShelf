@@ -27,22 +27,27 @@
             <p class="text-xl pb-10 max-w-[50%]">Description: {data.gameData.description}</p>
         </div>
         {#if gameTracked}
-            <form method="POST" action="?/removeGame" use:enhance>
-                <input type="hidden" name="remove-game" value="{data.gameData.id}">
-                <input type="submit" value="Remove Game">
-            </form>
+            <div class="flex flex-col gap-4 items-center justify-center">
+                {#if form?.success}
+                    <p>{form?.message}</p>
+                {/if}
+                <form method="POST" action="?/removeGame" use:enhance>
+                    <input type="hidden" name="remove-game" value="{data.gameData.id}">
+                    <input type="submit" value="Remove Game" class="bg-gray-700 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105">
+                </form>
 
-            <form method="POST" action="?/updateGameState" use:enhance>
-                <input type="hidden" name="updated-game" value="{data.gameData.id}">
-                <label for="new-game-state-{data.gameData.id}">Change Game State:</label>
-                <select id="new-game-state-{data.gameData.id}" name="new-game-state">
-                    <option value="Playing" selected={data.gameData.game_state === 'Playing'}>Playing</option>
-                    <option value="Backlog" selected={data.gameData.game_state === 'Backlog'}>Backlog</option>
-                    <option value="Completed" selected={data.gameData.game_state === 'Completed'}>Completed</option>
-                    <option value="Dropped" selected={data.gameData.game_state === 'Dropped'}>Dropped</option>
-                </select>
-                <input type="submit" value="Update State">
-            </form>
+                <form method="POST" action="?/updateGameState" use:enhance>
+                    <input type="hidden" name="updated-game" value="{data.gameData.id}">
+                    <label for="new-game-state-{data.gameData.id}">Change Game State:</label>
+                    <select id="new-game-state-{data.gameData.id}" name="new-game-state" class="bg-gray-700 p-1">
+                        <option value="Playing" selected={data.gameData.game_state === 'Playing'}>Playing</option>
+                        <option value="Backlog" selected={data.gameData.game_state === 'Backlog'}>Backlog</option>
+                        <option value="Completed" selected={data.gameData.game_state === 'Completed'}>Completed</option>
+                        <option value="Dropped" selected={data.gameData.game_state === 'Dropped'}>Dropped</option>
+                    </select>
+                    <input class="bg-gray-700 ml-4 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105" type="submit" value="Update State">
+                </form>
+            </div>
             {:else}
                 {#if form?.success}
                     <p>{form?.message}</p>

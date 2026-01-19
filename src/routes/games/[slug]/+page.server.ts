@@ -50,7 +50,7 @@ export const actions: Actions = {
         }
 
         const result = changeGameStateInDB(gameID, newGameState);
-        return result;
+        return {result: result, success: true, message: 'Game state updated successfully' };
     },
     addGame: async ({ request, params }) => {
         const data = await request.formData();
