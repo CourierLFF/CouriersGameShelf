@@ -25,39 +25,46 @@
     <p class="text-red-500">{form.message}</p>
 {/if}
 
-<button class="btn present-filled bg-white text-black" onclick={() => goto('/search')}>Search Games</button>
+<div class="flex flex-col items-center gap-6">
+    <button class="text-3xl btn present-filled bg-white text-black" onclick={() => goto('/search')}>Search Games</button>
 
-<form method="POST" class="flex flex-col gap-10 mb-20 max-w-50 ml-10 border-2 border-gray-700 rounded-lg p-6" action="?/addGame" use:enhance>
-    <label for="add-game">Add Game By IGDB ID:</label>
-    <input type="text" id="add-game" name="add-game" class="bg-gray-500 rounded-md p-2" required>
-
-    <label for="game-state">Select Game State:</label>
-    <select id="game-state" name="game-state" class="bg-gray-500 rounded-md p-2">
-        <option value="Playing">Playing</option>
-        <option value="Backlog" selected>Backlog</option>
-        <option value="Completed">Completed</option>
-        <option value="Dropped">Dropped</option>
-    </select>
-
-    <label for="user-rating">Your Rating (0-100):</label>
-    <select id="user-rating" name="user-rating">
-        <option value="0" selected>No Rating</option>
-        {#each Array(20) as _, index}
-            <option value="{(index + 1) * 5}">{(index + 1) * 5}</option>
-        {/each}
-    </select>
-
-    <input type="submit" value="Add Game">
-</form>
-
-
-<div class="my-20 flex justify-center gap-10">
-    <button onclick={() => currentState = 'Playing'}>Playing</button>
-    <button onclick={() => currentState = 'Backlog'}>Backlog</button>
-    <button onclick={() => currentState = 'Completed'}>Completed</button>
-    <button onclick={() => currentState = 'Dropped'}>Dropped</button>
+    <form method="POST" class="flex flex-col gap-10 mb-20 border-2 border-gray-700 rounded-lg p-6" action="?/addGame" use:enhance>
+        <div>
+            <label for="add-game">Add Game By IGDB ID:</label>
+            <input type="text" id="add-game" name="add-game" class="bg-gray-500 rounded-md p-2" required>
+        </div>
+        <div>
+            <label for="game-state">Select Game State:</label>
+            <select id="game-state" name="game-state" class="bg-gray-500 rounded-md p-2">
+                <option value="Playing">Playing</option>
+                <option value="Backlog" selected>Backlog</option>
+                <option value="Completed">Completed</option>
+                <option value="Dropped">Dropped</option>
+            </select>
+        </div>
+        <div>
+            <label for="user-rating">Your Rating (0-100):</label>
+            <select class="bg-gray-500 rounded-md p-2" id="user-rating" name="user-rating">
+                <option value="0" selected>No Rating</option>
+                {#each Array(20) as _, index}
+                    <option value="{(index + 1) * 5}">{(index + 1) * 5}</option>
+                {/each}
+            </select>
+        </div>
+        <input type="submit" value="Add Game" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">
+    </form>
 </div>
 
+
+
+<div class="mb-10 flex justify-center gap-10">
+    <button class="bg-gray-700 text-white rounded-md p-2 cursor-pointer" onclick={() => currentState = 'Playing'}>Playing</button>
+    <button class="bg-gray-700 text-white rounded-md p-2 cursor-pointer" onclick={() => currentState = 'Backlog'}>Backlog</button>
+    <button class="bg-gray-700 text-white rounded-md p-2 cursor-pointer" onclick={() => currentState = 'Completed'}>Completed</button>
+    <button class="bg-gray-700 text-white rounded-md p-2 cursor-pointer" onclick={() => currentState = 'Dropped'}>Dropped</button>
+</div>
+
+<h2 class="text-2xl font-bold mb-4 text-center">{currentState}</h2>
 {#if games.length > 0}
     {#each currentlyShownGames() as game}
         <p>IGDB ID: {game.id}</p>
