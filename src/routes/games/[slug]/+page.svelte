@@ -27,19 +27,14 @@
             <p class="text-xl pb-10 max-w-[50%]">Description: {data.gameData.description}</p>
         </div>
         {#if gameTracked}
-            <div class="flex flex-col gap-4 items-center justify-center">
+            <div class="flex flex-col gap-4 justify-center items-center">
                 {#if form?.success}
                     <p>{form?.message}</p>
                 {/if}
-                <form method="POST" action="?/removeGame" use:enhance>
-                    <input type="hidden" name="remove-game" value="{data.gameData.id}">
-                    <input type="submit" value="Remove Game" class="bg-gray-700 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105">
-                </form>
-
                 <form method="POST" action="?/updateGameState" use:enhance>
                     <input type="hidden" name="updated-game" value="{data.gameData.id}">
                     <label for="new-game-state-{data.gameData.id}">Change Game State:</label>
-                    <select id="new-game-state-{data.gameData.id}" name="new-game-state" class="bg-gray-700 p-1">
+                    <select id="new-game-state-{data.gameData.id}" name="new-game-state" class="bg-gray-700 rounded-md p-2">
                         <option value="Playing" selected={data.gameData.game_state === 'Playing'}>Playing</option>
                         <option value="Backlog" selected={data.gameData.game_state === 'Backlog'}>Backlog</option>
                         <option value="Completed" selected={data.gameData.game_state === 'Completed'}>Completed</option>
@@ -47,30 +42,36 @@
                     </select>
                     <input class="bg-gray-700 ml-4 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105" type="submit" value="Update State">
                 </form>
+
+                <form method="POST" action="?/removeGame" use:enhance>
+                    <input type="hidden" name="remove-game" value="{data.gameData.id}">
+                    <input type="submit" value="Remove Game" class="text-3xl bg-gray-700 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105">
+                </form>
             </div>
             {:else}
                 {#if form?.success}
                     <p>{form?.message}</p>
                 {/if}
-                <form method="POST" class="add-game-form flex flex-col gap-4" action="?/addGame" use:enhance>
+                <form method="POST" class="add-game-form flex flex-col gap-4 justify-center" action="?/addGame" use:enhance>
+                    <div class="flex gap-8">
+                        <label for="game-state">Select Game State:</label>
+                        <select id="game-state" name="game-state" class="bg-gray-700 rounded-md p-2">
+                            <option value="Playing">Playing</option>
+                            <option value="Backlog" selected>Backlog</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Dropped">Dropped</option>
+                        </select>
 
-                    <label for="game-state">Select Game State:</label>
-                    <select id="game-state" name="game-state" class="bg-gray-700 p-1">
-                        <option value="Playing">Playing</option>
-                        <option value="Backlog" selected>Backlog</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Dropped">Dropped</option>
-                    </select>
+                        <label for="user-rating">Your Rating (0-100):</label>
+                        <select id="user-rating" name="user-rating" class="bg-gray-700 rounded-md p-2">
+                            <option value="0" selected>No Rating</option>
+                            {#each Array(20) as _, index}
+                                <option value="{(index + 1) * 5}">{(index + 1) * 5}</option>
+                            {/each}
+                        </select>
+                    </div>
 
-                    <label for="user-rating">Your Rating (0-100):</label>
-                    <select id="user-rating" name="user-rating" class="bg-gray-700 p-1">
-                        <option value="0" selected>No Rating</option>
-                        {#each Array(20) as _, index}
-                            <option value="{(index + 1) * 5}">{(index + 1) * 5}</option>
-                        {/each}
-                    </select>
-
-                    <input type="submit" value="Add Game" class="bg-gray-700 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105">
+                    <input type="submit" value="Add Game" class="text-3xl bg-gray-700 p-2 rounded transform transition-transform duration-300 ease-in-out hover:scale-105">
                 </form>
             {/if}
     {:else if data.error}
