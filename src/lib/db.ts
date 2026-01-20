@@ -93,4 +93,18 @@ export function changeGameStateInDB(gameID: number, newState: string) {
     }
 
     return result;
-}   
+}
+
+export function changeGameRatingInDB(gameID: number, newRating: number) {
+    if (newRating >= 0 && newRating <= 100 && newRating % 5 === 0) {
+        const gameRatingChange = db.prepare(
+            `UPDATE games SET user_rating = ? WHERE id = ?`
+        );
+
+        const result = gameRatingChange.run(newRating, gameID);
+
+        return { error: false, data: result };
+    } else {
+        return { error: true, message: 'Invalid rating value.' };
+    }
+}

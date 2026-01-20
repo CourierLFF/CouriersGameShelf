@@ -72,7 +72,7 @@
 <h2 class="text-3xl font-bold mb-10 text-center">{currentState}</h2>
 {#if games.length > 0}
     {#each currentlyShownGames() as game}
-        <div class="flex mx-[20%] border-2 border-gray-700 bg-gray-900 rounded-lg p-6 my-10">
+        <div class="flex mx-[20%] border-2 border-gray-700 bg-gray-900 rounded-lg p-6 my-10 items-center">
             <a href="/games/{game.id}"><img class="w-[60%]" src="{game.cover_art}" alt="Cover Art for {game.name}" /></a>
             <div class="flex flex-col justify-center mx-6 gap-4 w-[60%]">
                 <a class="text-4xl" href="/games/{game.id}">{game.name}</a>
@@ -82,19 +82,34 @@
                 {/if}
             </div>
             <div class="flex flex-col justify-center items-center gap-8">
-                <form method="POST" action="?/updateGameState" use:enhance>
-                    <div class="flex flex-col gap-2">
-                        <input type="hidden" name="updated-game" value="{game.id}">
-                        <label for="new-game-state-{game.id}">Change Game State:</label>
-                        <select class="bg-gray-700 rounded-md p-2" id="new-game-state-{game.id}" name="new-game-state">
-                            <option value="Playing" selected={game.game_state === 'Playing'}>Playing</option>
-                            <option value="Backlog" selected={game.game_state === 'Backlog'}>Backlog</option>
-                            <option value="Completed" selected={game.game_state === 'Completed'}>Completed</option>
-                            <option value="Dropped" selected={game.game_state === 'Dropped'}>Dropped</option>
-                        </select>
-                        <input type="submit" value="Update State" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">
-                    </div>
-                </form>
+                <div class="flex justify-center items-center gap-8">
+                    <form method="POST" action="?/updateGameState" use:enhance>
+                        <div class="flex flex-col gap-2">
+                            <input type="hidden" name="updated-game" value="{game.id}">
+                            <label for="new-game-state-{game.id}">Change State:</label>
+                            <select class="bg-gray-700 rounded-md p-2" id="new-game-state-{game.id}" name="new-game-state">
+                                <option value="Playing" selected={game.game_state === 'Playing'}>Playing</option>
+                                <option value="Backlog" selected={game.game_state === 'Backlog'}>Backlog</option>
+                                <option value="Completed" selected={game.game_state === 'Completed'}>Completed</option>
+                                <option value="Dropped" selected={game.game_state === 'Dropped'}>Dropped</option>
+                            </select>
+                            <input type="submit" value="Update State" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">
+                        </div>
+                    </form>
+                    <form method="POST" action="?/updateGameRating" use:enhance>
+                        <div class="flex flex-col gap-2">
+                            <input type="hidden" name="rated-game" value="{game.id}">
+                            <label for="new-rating-{game.id}">Change Rating:</label>
+                            <select class="bg-gray-700 rounded-md p-2" id="new-rating-{game.id}" name="new-rating">
+                                <option value="0" selected={game.user_rating === null || game.user_rating === 0}>No Rating</option>
+                                {#each Array(20) as _, index}
+                                    <option value="{(index + 1) * 5}" selected={game.user_rating === (index + 1) * 5}>{(index + 1) * 5}</option>
+                                {/each}
+                            </select>
+                            <input type="submit" value="Update Rating" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">
+                        </div>
+                    </form>
+                </div>
                 <form method="POST" action="?/removeGame" use:enhance>
                     <input type="hidden" name="remove-game" value="{game.id}">
                     <input type="submit" value="Remove Game" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">

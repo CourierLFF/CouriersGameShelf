@@ -1,7 +1,7 @@
 import { IGDBID, IGDBSECRET } from "$env/static/private";
 import { getIGDBAccessToken, getGameByID, getCoverByID, searchGamesByName } from "$lib/igdb";
 import { formatDate } from "$lib/utils";
-import db, { addGameToDB, changeGameStateInDB, getGamesFromDB, removeGameFromDB } from "$lib/db";
+import db, { addGameToDB, changeGameRatingInDB, changeGameStateInDB, getGamesFromDB, removeGameFromDB } from "$lib/db";
 import { fail, json, type Actions } from "@sveltejs/kit";
 import type { Game } from "$lib/types";
 
@@ -74,4 +74,25 @@ export const actions: Actions = {
         const result = changeGameStateInDB(gameID, newGameState);
         return result;
     },
+    updateGameRating: async ({ request }) => {
+        const data = await request.formData();
+
+        const gameID = Number(data.get('rated-game'));
+        if (Number.isNaN(gameID)) {
+            return fail(400, { error: true, message: 'Invalid game ID' });
+        }
+
+        const newRating = Number(data.get('new-rating'));
+        if (Number.isNaN(newRating) || newRating < 0 || newRating > 100) {
+            return fail(400, { error: true, message: 'Invalid user rating' });
+        }
+        console.log
+
+        const result = changeGameRatingInDB(gameID, newRating);
+        if (result.error) {
+            return fail(400, result);
+        }
+
+        return result;
+    }
 };
