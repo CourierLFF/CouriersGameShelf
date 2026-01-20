@@ -28,8 +28,10 @@
 {/if}
 
 <div class="flex flex-col items-center gap-6">
-    <button class="text-3xl btn present-filled bg-white text-black" onclick={() => goto('/search')}>Search Games</button>
-    <button class="text-3xl btn present-filled bg-white text-black" onclick={() => addGameShow = !addGameShow}>Add Game</button>
+    <div class="flex gap-4">
+        <button class="text-3xl btn present-filled bg-white text-black" onclick={() => goto('/search')}>Search Games</button>
+        <button class="text-3xl btn present-filled bg-white text-black" onclick={() => addGameShow = !addGameShow}>Add Game</button>        
+    </div>
 
     {#if addGameShow}
         <form method="POST" class="flex flex-col gap-10 mb-20 border-2 border-gray-700 rounded-lg p-6" action="?/addGame" use:enhance>
