@@ -69,37 +69,38 @@
     <button class="bg-gray-700 text-white rounded-md p-2 cursor-pointer" onclick={() => currentState = 'Dropped'}>Dropped</button>
 </div>
 
-<h2 class="text-2xl font-bold mb-4 text-center">{currentState}</h2>
+<h2 class="text-3xl font-bold mb-10 text-center">{currentState}</h2>
 {#if games.length > 0}
     {#each currentlyShownGames() as game}
-        <p>IGDB ID: {game.id}</p>
-        <p>{game.name}</p>
-        <p>{game.release_date}</p>
-        <p>{game.description}</p>
-        <p>Genres: {game.genres}</p>
-        <p>Platforms: {game.platforms}</p>
-        <img src="{game.cover_art}" alt="Cover Art for {game.name}" />
-        <p>Game State: {game.game_state}</p>
-        <p>Your Rating: {game.user_rating ? game.user_rating : 'No Rating'}</p>
-        {#if currentState === 'Completed'}
-            <p>Date Completed: {game.date_completed}</p>
-        {/if}
-        <form method="POST" action="?/removeGame" use:enhance>
-            <input type="hidden" name="remove-game" value="{game.id}">
-            <input type="submit" value="Remove Game">
-        </form>
-
-        <form method="POST" action="?/updateGameState" use:enhance>
-            <input type="hidden" name="updated-game" value="{game.id}">
-            <label for="new-game-state-{game.id}">Change Game State:</label>
-            <select id="new-game-state-{game.id}" name="new-game-state">
-                <option value="Playing" selected={game.game_state === 'Playing'}>Playing</option>
-                <option value="Backlog" selected={game.game_state === 'Backlog'}>Backlog</option>
-                <option value="Completed" selected={game.game_state === 'Completed'}>Completed</option>
-                <option value="Dropped" selected={game.game_state === 'Dropped'}>Dropped</option>
-            </select>
-            <input type="submit" value="Update State">
-        </form>
+        <div class="flex mx-[20%] border-2 border-gray-700 bg-gray-900 rounded-lg p-6 my-10">
+            <a href="/games/{game.id}"><img class="w-[60%]" src="{game.cover_art}" alt="Cover Art for {game.name}" /></a>
+            <div class="flex flex-col justify-center mx-6 gap-4 w-[60%]">
+                <a class="text-4xl" href="/games/{game.id}">{game.name}</a>
+                <p>Your Rating: {game.user_rating ? game.user_rating + ' / 100' : 'No Rating'}</p>
+                {#if currentState === 'Completed'}
+                    <p>Date Completed: {game.date_completed}</p>
+                {/if}
+            </div>
+            <div class="flex flex-col justify-center items-center gap-8">
+                <form method="POST" action="?/updateGameState" use:enhance>
+                    <div class="flex flex-col gap-2">
+                        <input type="hidden" name="updated-game" value="{game.id}">
+                        <label for="new-game-state-{game.id}">Change Game State:</label>
+                        <select class="bg-gray-700 rounded-md p-2" id="new-game-state-{game.id}" name="new-game-state">
+                            <option value="Playing" selected={game.game_state === 'Playing'}>Playing</option>
+                            <option value="Backlog" selected={game.game_state === 'Backlog'}>Backlog</option>
+                            <option value="Completed" selected={game.game_state === 'Completed'}>Completed</option>
+                            <option value="Dropped" selected={game.game_state === 'Dropped'}>Dropped</option>
+                        </select>
+                        <input type="submit" value="Update State" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">
+                    </div>
+                </form>
+                <form method="POST" action="?/removeGame" use:enhance>
+                    <input type="hidden" name="remove-game" value="{game.id}">
+                    <input type="submit" value="Remove Game" class="bg-gray-700 text-white rounded-md p-2 cursor-pointer">
+                </form>
+            </div>
+        </div>
     {/each}
 {:else}
     <p>No games found</p>
