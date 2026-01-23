@@ -8,14 +8,15 @@
 
     let games: Game[] = $derived(data.returnedGames);
 
-    let currentSearchedGames = $derived(() =>
-        form && !form.error && form.data ? (form.data as Game[]) : null
-    );
-
     let currentState: string = $state('Backlog');
 
+    let trackedGameSearchQuery: string = $state('');
+
     let currentlyShownGames = $derived(() => {
-        return games.filter((game) => game.game_state === currentState);
+        const query = trackedGameSearchQuery.trim().toLowerCase();
+        return games
+        .filter((game) => game.game_state === currentState)
+        .filter((game) => game.name.toLowerCase().includes(query));
     });
 
     let addGameShow = $state(false);
@@ -71,7 +72,11 @@
     <button class="bg-gray-700 text-white rounded-md p-2 cursor-pointer" onclick={() => currentState = 'Dropped'}>Dropped</button>
 </div>
 
-<h2 class="text-3xl font-bold mb-10 text-center">{currentState}</h2>
+<div class="flex flex-col items-center mb-10">
+    <h2 class="text-3xl font-bold mb-10 text-center">{currentState}</h2>
+    <input id="search-tracked-games" bind:value={trackedGameSearchQuery} class="bg-gray-700 text-white rounded-md p-2" type="search" placeholder="Search Tracked Games" name="search-tracked-games">
+</div>
+
 {#if games.length > 0}
     {#each currentlyShownGames() as game}
         <div class="flex mx-[20%] border-2 border-gray-700 bg-gray-900 rounded-lg p-6 my-10 items-center">
