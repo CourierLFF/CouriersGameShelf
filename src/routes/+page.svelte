@@ -12,6 +12,8 @@
 
     let trackedGameSearchQuery: string = $state('');
 
+    let currentFilter = $state('None');
+
     let currentlyShownGames = $derived(() => {
         const query = trackedGameSearchQuery.trim().toLowerCase();
         return games
@@ -74,7 +76,21 @@
 
 <div class="flex flex-col items-center mb-10">
     <h2 class="text-3xl font-bold mb-10 text-center">{currentState}</h2>
-    <input id="search-tracked-games" bind:value={trackedGameSearchQuery} class="bg-gray-700 text-white rounded-md p-2" type="search" placeholder="Search Tracked Games" name="search-tracked-games">
+    <div>
+        <input id="search-tracked-games" bind:value={trackedGameSearchQuery} class="bg-gray-700 text-white rounded-md p-2 mr-8" type="search" placeholder="Search Tracked Games" name="search-tracked-games">
+        <label for="tracked-game-filter" class="mt-4 mb-2">Filter By:</label>
+        <select class="bg-gray-700 rounded-md p-2" bind:value={currentFilter} id="tracked-game-filter" name="tracked-game-filter">
+            <option value="None">None</option>
+            <option value="NameAsc">Name: A to Z</option>
+            <option value="NameDesc">Name: Z to A</option>
+            <option value="RatingAsc">Rating: Low to High</option>
+            <option value="RatingDesc">Rating: High to Low</option>
+            {#if currentState === 'Completed'}
+            <option value="DateCompletedAsc">Date Completed: Oldest to Newest</option>
+            <option value="DateCompletedDesc">Date Completed: Newest to Oldest</option>
+            {/if}
+        </select>
+    </div>
 </div>
 
 {#if games.length > 0}
