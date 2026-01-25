@@ -3,6 +3,7 @@
     import type { PageData } from './$types';
     import type { Game } from '$lib/types';
     import { goto } from '$app/navigation';
+    import { deFormatDate } from '$lib/utils';
 
     const { data, form } = $props<{ data: PageData; form?: any }>();
 
@@ -16,7 +17,43 @@
 
     let currentlyShownGames = $derived(() => {
         const query = trackedGameSearchQuery.trim().toLowerCase();
-        return games
+
+        const sortedGames = [...games];
+
+        switch (currentFilter) {
+            case 'None':
+                break;
+            case 'NameAsc':
+                sortedGames.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'NameDesc':
+                sortedGames.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            case 'RatingAsc':
+                sortedGames.sort((a, b) => (a.user_rating ?? 0) - (b.user_rating ?? 0));
+                break;
+            case 'RatingDesc':
+                sortedGames.sort((a, b) => (b.user_rating ?? 0) - (a.user_rating ?? 0));
+                break;
+            case 'DateCompletedAsc':
+                sortedGames.sort((a, b) => {
+                    const dateA = a.date_completed ? deFormatDate(a.date_completed) : 0;
+                    const dateB = b.date_completed ? deFormatDate(b.date_completed) : 0;
+                    return dateA - dateB;
+                });
+                break;
+            case 'DateCompletedDesc':
+                sortedGames.sort((a, b) => {
+                    const dateA = a.date_completed ? deFormatDate(a.date_completed) : 0;
+                    const dateB = b.date_completed ? deFormatDate(b.date_completed) : 0;
+                    return dateB - dateA;
+                });
+                break;
+            default:
+                break;
+        }
+
+        return sortedGames
         .filter((game) => game.game_state === currentState)
         .filter((game) => game.name.toLowerCase().includes(query));
     });
