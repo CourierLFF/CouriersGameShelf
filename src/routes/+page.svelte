@@ -64,7 +64,7 @@
 </script>
 
 {#if form?.error}
-    <p class="text-red-500">{form.message}</p>
+    <p class="text-red-500 text-center my-4">{form.message}</p>
 {/if}
 
 <div class="flex flex-col items-center gap-6">
@@ -139,6 +139,11 @@
                 <p>Your Rating: {game.user_rating ? game.user_rating + ' / 100' : 'No Rating'}</p>
                 {#if currentState === 'Completed'}
                     <p>Date Completed: {game.date_completed}</p>
+                    <form method="POST" action="?/updateCompletionDate" use:enhance>
+                        <input type="hidden" name="date-updated-game" value="{game.id}">
+                        <label for="change-completion-date">Change Completion Date:</label>
+                        <input type="text" id="change-completion-date" name="change-completion-date" class="bg-gray-700 rounded-md p-2" placeholder="Change Completion Date" value="{game.date_completed}">
+                    </form>
                 {/if}
             </div>
             <div class="flex flex-col justify-center items-center gap-8">

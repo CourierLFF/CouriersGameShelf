@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import { dev } from '$app/environment';
 import type { Game } from './types';
-import { formatDate } from "$lib/utils";
+import { formatDate, isValidDateFormat } from "$lib/utils";
 import { error } from '@sveltejs/kit';
 
 const db = new Database(dev ? 'dev.db' : 'prod.db');
@@ -106,5 +106,19 @@ export function changeGameRatingInDB(gameID: number, newRating: number) {
         return { error: false, data: result };
     } else {
         return { error: true, message: 'Invalid rating value.' };
+    }
+}
+
+export function changeCompletionDateInDB(gameID: number, newDate: string) {
+    if (isValidDateFormat(newDate)) {
+        const gameDateChange = db.prepare(
+            `UPDATE games SET date_completed = ? WHERE id = ?`
+        );
+
+        const result = gameDateChange.run(newDate, gameID);
+
+        return { error: false, data: result };
+    } else {
+        return { error: true, message: 'Invalid date format. Expected YYYY-MM-DD.' };
     }
 }

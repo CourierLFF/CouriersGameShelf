@@ -9,18 +9,24 @@ export function formatDate(seconds: number): string {
 }
 
 export function deFormatDate(dateString: string): number {
-    const m = dateString.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-    if (!m) {
-        throw new Error(`Invalid date format: ${dateString}, expected DD-MM-YYYY`);
+    if (isValidDateFormat(dateString)   === false) {
+        throw new Error(`Invalid date format: ${dateString}. Expected format: YYYY-MM-DD`);
     }
 
-    const day = Number(m[1]);
-    const month = Number(m[2]);
-    const year = Number(m[3]);
+    const splitDate = dateString.split('-');
+
+    const day = Number(splitDate[2]);
+    const month = Number(splitDate[1]);
+    const year = Number(splitDate[0]);
 
     if (month < 1 || month > 12) throw new RangeError(`Invalid month: ${month}`);
     const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
     if (day < 1 || day > daysInMonth) throw new RangeError(`Invalid day: ${day} for month: ${month} and year: ${year}`);
 
     return Math.floor(Date.UTC(year, month - 1, day) / 1000);
+}
+
+export function isValidDateFormat(dateString: string): boolean {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(dateString);
 }
