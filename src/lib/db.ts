@@ -11,6 +11,7 @@ db.pragma('journal_mode = WAL');
 db.exec(`
     CREATE TABLE IF NOT EXISTS games (
         id INTEGER PRIMARY KEY,
+        igdb_url TEXT,
         name TEXT,
         release_date TEXT,
         description TEXT,
@@ -37,8 +38,8 @@ export function addGameToDB(gameData: Game, state: string = 'backlog', user_rati
     }
 
     const gameAdd = db.prepare(
-        `INSERT INTO games (id, name, release_date, description, genres, platforms, cover_art, game_state, date_completed, user_rating) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO games (id, igdb_url, name, release_date, description, genres, platforms, cover_art, game_state, date_completed, user_rating) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     );
 
     let completionDate = '';
@@ -49,6 +50,7 @@ export function addGameToDB(gameData: Game, state: string = 'backlog', user_rati
     try {
             const result = gameAdd.run(
             gameData.id,
+            gameData.igdb_url,
             gameData.name,
             formatDate(gameData.release_date),
             gameData.description,

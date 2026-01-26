@@ -183,5 +183,5 @@
         </div>
     {/each}
 {:else}
-    <p>No games found</p>
+    <p class="text-center text-2xl">No games found</p>
 {/if}

@@ -1,5 +1,6 @@
 export type Game = {
     id: number;
+    igdb_url: string;
     name: string;
     release_date: number;
     description: string;
