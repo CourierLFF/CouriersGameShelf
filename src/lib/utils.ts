@@ -56,7 +56,7 @@ export async function notifyDiscordBotAdd(game: Game) {
     }
 }
 
-export async function notifyDiscordBotChange(game: Game) {
+export async function notifyDiscordBotRatingChange(game: Game) {
     try {
         const response = await fetch('http://localhost:8081', {
             method: 'POST',

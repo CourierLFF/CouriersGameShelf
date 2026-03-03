@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import { dev } from '$app/environment';
 import type { Game } from './types';
-import { formatDate, isValidDateFormat, notifyDiscordBotAdd, notifyDiscordBotChange } from "$lib/utils";
+import { formatDate, isValidDateFormat, notifyDiscordBotAdd, notifyDiscordBotRatingChange } from "$lib/utils";
 import { error } from '@sveltejs/kit';
 
 const db = new Database(dev ? 'dev.db' : 'prod.db');
@@ -96,6 +96,8 @@ export function changeGameStateInDB(gameID: number, newState: string) {
         result = gameStateChange.run(newState, new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date()), gameID);
     }
 
+    notifyDiscordBotAdd(getGamesFromDB().find(game => game.id === gameID) as Game);
+
     return result;
 }
 
@@ -107,7 +109,7 @@ export function changeGameRatingInDB(gameID: number, newRating: number) {
 
         const result = gameRatingChange.run(newRating, gameID);
 
-        notifyDiscordBotChange(getGamesFromDB().find(game => game.id === gameID) as Game);
+        notifyDiscordBotRatingChange(getGamesFromDB().find(game => game.id === gameID) as Game);
 
         return { error: false, data: result };
     } else {
