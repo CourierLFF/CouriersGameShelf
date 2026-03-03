@@ -43,6 +43,29 @@ export async function notifyDiscordBotAdd(game: Game) {
             body: JSON.stringify({
                 name: game.name,
                 user_rating: game.user_rating,
+                game_state: 'Playing',
+                cover_art: game.cover_art,
+        })
+        });
+
+        if (!response.ok) {
+            console.error('Failed to notify Discord bot:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error notifying Discord bot:', error);
+    }
+}
+
+export async function notifyDiscordBotChange(game: Game) {
+    try {
+        const response = await fetch('http://localhost:8081', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: game.name,
+                user_rating: game.user_rating,
                 game_state: game.game_state,
                 cover_art: game.cover_art,
         })
