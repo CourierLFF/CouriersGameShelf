@@ -1,3 +1,5 @@
+import type { Game } from "./types";
+
 export function formatDate(seconds: number): string {
     const date = new Date(seconds * 1000);
     
@@ -29,4 +31,50 @@ export function deFormatDate(dateString: string): number {
 export function isValidDateFormat(dateString: string): boolean {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return regex.test(dateString);
+}
+
+export async function notifyDiscordBotAdd(game: Game) {
+    try {
+        const response = await fetch('http://localhost:8081', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: game.name,
+                user_rating: game.user_rating,
+                game_state: game.game_state,
+                cover_art: game.cover_art,
+        })
+        });
+
+        if (!response.ok) {
+            console.error('Failed to notify Discord bot:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error notifying Discord bot:', error);
+    }
+}
+
+export async function notifyDiscordBotChange(game: Game) {
+    try {
+        const response = await fetch('http://localhost:8081', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: game.name,
+                user_rating: game.user_rating,
+                game_state: 'Rating Changed',
+                cover_art: game.cover_art,
+        })
+        });
+
+        if (!response.ok) {
+            console.error('Failed to notify Discord bot:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error notifying Discord bot:', error);
+    }
 }

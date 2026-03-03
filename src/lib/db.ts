@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import { dev } from '$app/environment';
 import type { Game } from './types';
-import { formatDate, isValidDateFormat } from "$lib/utils";
+import { formatDate, isValidDateFormat, notifyDiscordBotAdd, notifyDiscordBotChange } from "$lib/utils";
 import { error } from '@sveltejs/kit';
 
 const db = new Database(dev ? 'dev.db' : 'prod.db');
@@ -62,6 +62,8 @@ export function addGameToDB(gameData: Game, state: string = 'backlog', user_rati
             user_rating
         );
 
+        notifyDiscordBotAdd(gameData);
+
         return { error: false, success: true, data: result };
     } catch (error) {
         return { error: true, message: 'Failed to add game to database.' };
@@ -104,6 +106,8 @@ export function changeGameRatingInDB(gameID: number, newRating: number) {
         );
 
         const result = gameRatingChange.run(newRating, gameID);
+
+        notifyDiscordBotChange(getGamesFromDB().find(game => game.id === gameID) as Game);
 
         return { error: false, data: result };
     } else {
