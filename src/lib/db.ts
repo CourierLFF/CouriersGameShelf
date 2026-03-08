@@ -30,6 +30,11 @@ export function getGamesFromDB(): Game[] {
     return dbGameData;
 }
 
+function getGameFromDB(gameID: number): Game | null {
+    const dbGameData: Game = db.prepare('SELECT * FROM games WHERE id = ?').get(gameID) as Game;
+    return dbGameData || null;
+}
+
 export function addGameToDB(gameData: Game, state: string = 'backlog', user_rating: number = 0) {
 
     const existingGame = db.prepare('SELECT id FROM games WHERE id = ?').get(gameData.id);
@@ -102,6 +107,8 @@ export function changeGameStateInDB(gameID: number, newState: string) {
 }
 
 export function changeGameRatingInDB(gameID: number, newRating: number) {
+    let old_rating = getGameFromDB(gameID)?.user_rating || 0;
+
     if (newRating >= 0 && newRating <= 100 && newRating % 5 === 0) {
         const gameRatingChange = db.prepare(
             `UPDATE games SET user_rating = ? WHERE id = ?`
@@ -109,7 +116,7 @@ export function changeGameRatingInDB(gameID: number, newRating: number) {
 
         const result = gameRatingChange.run(newRating, gameID);
 
-        notifyDiscordBotRatingChange(getGamesFromDB().find(game => game.id === gameID) as Game);
+        notifyDiscordBotRatingChange(getGamesFromDB().find(game => game.id === gameID) as Game, old_rating);
 
         return { error: false, data: result };
     } else {

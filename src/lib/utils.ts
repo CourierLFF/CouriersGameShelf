@@ -79,7 +79,7 @@ export async function notifyDiscordBotChange(game: Game) {
     }
 }
 
-export async function notifyDiscordBotRatingChange(game: Game) {
+export async function notifyDiscordBotRatingChange(game: Game, old_rating: number) {
     try {
         const response = await fetch('http://localhost:8081', {
             method: 'POST',
@@ -91,6 +91,7 @@ export async function notifyDiscordBotRatingChange(game: Game) {
                 user_rating: game.user_rating,
                 game_state: 'Rating Changed',
                 cover_art: game.cover_art,
+                old_rating: old_rating
         })
         });
 
